@@ -1,0 +1,15 @@
+services:
+  bid-app-db:
+    image: postgres
+    restart: always
+    container_name: bid-app-db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: example
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+
+volumes:
+  postgres:
