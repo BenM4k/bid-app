@@ -1,9 +1,9 @@
+import { createBid } from "@/actions/bids-actions";
 import { Button } from "@/components/ui/button";
-import { database } from "@/db/database";
-import { items } from "@/db/schema";
+import { getBidsForItem } from "@/data-access/bids";
+import { getItemById } from "@/data-access/items";
 import { formatToDollar } from "@/lib/currency";
 import { formatDistance } from "date-fns";
-import { eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 
 type Props = {
@@ -18,11 +18,9 @@ type Bid = {
 }[];
 export default async function Page({ params }: Props) {
   const itemId = (await params).id;
-  const bids: Bid = [];
-  const hasBids = bids.length > 0;
-  const item = await database.query.items.findFirst({
-    where: eq(items.id, Number(itemId)),
-  });
+  const allBids = await getBidsForItem(Number(itemId));
+  const hasBids = allBids.length > 0;
+  const item = await getItemById(Number(itemId));
 
   if (!item) return notFound();
 
@@ -35,6 +33,12 @@ export default async function Page({ params }: Props) {
           </h1>
           <div className="">
             <div className="space-y-2">
+              <p>
+                Current Bid:{" "}
+                <span className="text-2xl font-bold">
+                  ${formatToDollar(item.currentBid)}
+                </span>
+              </p>
               <p>
                 Starting price:{" "}
                 <span className="text-2xl font-bold">
@@ -51,16 +55,23 @@ export default async function Page({ params }: Props) {
           </div>
         </div>
         <div className="space-y-4 flex-1">
-          <h2 className="text-2xl font-bold text-center">Current bids</h2>
+          <div className="flex justify-between">
+            <h2 className="text-2xl font-bold text-center">Current bids</h2>
+            <form action={createBid.bind(null, item.id)}>
+              <Button type="submit">Place Bid</Button>
+            </form>
+          </div>
 
           <ul className="space-y-4">
             {hasBids ? (
-              bids.map((bid) => (
-                <li className="bg-gray-200 rounded-xl p-8">
+              allBids.map((bid) => (
+                <li className="bg-gray-200 rounded-xl p-8" key={bid.id}>
                   <div className="flex gap-4">
                     <div className="">
-                      <span className="font-bold">${bid.amount}</span> by
-                      <span className="font-bold">{bid.userName}</span>
+                      <span className="font-bold mr-1">
+                        ${formatToDollar(bid.amount)}
+                      </span>
+                      by <span className="font-bold ml-1">{bid.user.name}</span>
                     </div>
                     <div className="">{formatTimestamp(bid.timestamp)}</div>
                   </div>
@@ -69,7 +80,6 @@ export default async function Page({ params }: Props) {
             ) : (
               <div className="flex flex-col items-center space-y-2 bg-gray-100 rounded-2xl p-8">
                 <h2>No bids yet</h2>
-                <Button>Place Bid</Button>
               </div>
             )}
           </ul>
