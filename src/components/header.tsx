@@ -14,11 +14,20 @@ export default async function Header() {
             <Image src={"/logo.png"} alt="" width={50} height={50} />
             Bidbuddy.com
           </Link>
+          <Link href={"/"} className="hover:underline flex items-center gap-1">
+            All Auctions
+          </Link>
           <Link
-            href={"/bids/create"}
+            href={"/items/create"}
             className="hover:underline flex items-center gap-1"
           >
-            Auction Item
+            Create Auction
+          </Link>
+          <Link
+            href={"/auction"}
+            className="hover:underline flex items-center gap-1"
+          >
+            My Auctions
           </Link>
         </div>
         <div className="flex flex-col items-end">
