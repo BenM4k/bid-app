@@ -1,17 +1,16 @@
-import { signOut } from "@/auth";
 import { Button } from "./ui/button";
+import { signOut } from "next-auth/react";
 
 export function SignOut() {
   return (
-    <form
-      action={async () => {
-        "use server";
-        await signOut({
-          redirectTo: "/",
-        });
-      }}
+    <Button
+      onClick={() =>
+        signOut({
+          callbackUrl: "/",
+        })
+      }
     >
-      <Button type="submit">Sign Out</Button>
-    </form>
+      Sign Out
+    </Button>
   );
 }

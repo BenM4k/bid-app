@@ -5,7 +5,15 @@ import { items } from "../db/schema";
 import { database } from "@/db/database";
 import { redirect } from "next/navigation";
 
-export async function uploadItem(formData: FormData) {
+export async function uploadItem({
+  name,
+  startingPrice,
+  endDate,
+}: {
+  name: string;
+  startingPrice: number;
+  endDate: Date;
+}) {
   const session = await auth();
 
   if (!session) {
@@ -14,9 +22,10 @@ export async function uploadItem(formData: FormData) {
   if (!session?.user) return;
 
   await database.insert(items).values({
-    name: formData.get("name") as string,
-    startingPrice: Number(formData.get("startingPrice")),
+    name,
+    startingPrice: startingPrice,
     userId: session.user.id,
+    endDate,
   });
   redirect("/");
 }
