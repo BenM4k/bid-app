@@ -12,11 +12,11 @@ let database: PostgresJsDatabase<typeof schema>;
 let pg: ReturnType<typeof postgres>;
 
 if (env.NODE_ENV === "production") {
-  pg = postgres(env.DATABASE_URL);
+  pg = postgres(env.POSTGRES_URL);
   database = drizzle(pg, { schema });
 } else {
   if (!global.database) {
-    pg = postgres(env.DATABASE_URL);
+    pg = postgres(env.POSTGRES_URL);
     global.database = drizzle(pg, { schema });
   }
   database = global.database;

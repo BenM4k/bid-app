@@ -1,4 +1,3 @@
-import { env } from "@/env";
 import { relations } from "drizzle-orm";
 import {
   boolean,
@@ -11,7 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 import { AdapterAccountType } from "next-auth/adapters";
 
-export const users = pgTable("user", {
+export const users = pgTable("bb_user", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => crypto.randomUUID()),
@@ -22,7 +21,7 @@ export const users = pgTable("user", {
 });
 
 export const accounts = pgTable(
-  "account",
+  "bb_account",
   {
     userId: text("userId")
       .notNull()
@@ -45,7 +44,7 @@ export const accounts = pgTable(
   })
 );
 
-export const sessions = pgTable("session", {
+export const sessions = pgTable("bb_session", {
   sessionToken: text("sessionToken").primaryKey(),
   userId: text("userId")
     .notNull()
@@ -54,7 +53,7 @@ export const sessions = pgTable("session", {
 });
 
 export const verificationTokens = pgTable(
-  "verificationToken",
+  "bb_verificationToken",
   {
     identifier: text("identifier").notNull(),
     token: text("token").notNull(),
@@ -68,7 +67,7 @@ export const verificationTokens = pgTable(
 );
 
 export const authenticators = pgTable(
-  "authenticator",
+  "bb_authenticator",
   {
     credentialID: text("credentialID").notNull().unique(),
     userId: text("userId")
@@ -88,7 +87,7 @@ export const authenticators = pgTable(
   })
 );
 
-export const items = pgTable("item", {
+export const items = pgTable("bb_item", {
   id: serial("id").primaryKey(),
   userId: text("userId")
     .notNull()
@@ -100,7 +99,7 @@ export const items = pgTable("item", {
   endDate: timestamp("endDate", { mode: "date" }).notNull(),
 });
 
-export const bids = pgTable("bids", {
+export const bids = pgTable("bb_bids", {
   id: serial("id").primaryKey(),
   amount: integer("amount").notNull(),
   itemId: serial("itemId")
